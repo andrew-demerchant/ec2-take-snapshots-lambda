@@ -23,7 +23,7 @@ REGIONS = ["us-east-1"]
 def take_snapshots(volume, region, tags_kwargs, name):
     if NOOP is False:
         snapshot = volume.create_snapshot(
-                   Description= name + " :Created with ec2-take-snapshots"
+                   Description= name + " :Created with ec2-take-snapshots" #original version doesn't handle tags right, and in lieu of me solving that, I just did this instead.
                    )
         if tags_kwargs:
             snapshot.create_tags(**tags_kwargs)

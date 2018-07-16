@@ -20,10 +20,10 @@ SNAPSHOT_TAGS = {}
 REGIONS = ["us-east-1"]
 
 
-def take_snapshots(volume, region, tags_kwargs):
+def take_snapshots(volume, region, tags_kwargs, name):
     if NOOP is False:
         snapshot = volume.create_snapshot(
-                   Description="Created with ec2-take-snapshots"
+                   Description= name + " :Created with ec2-take-snapshots"
                    )
         if tags_kwargs:
             snapshot.create_tags(**tags_kwargs)
@@ -104,8 +104,11 @@ def main(event, context):
             volumes = get_tag_volumes(ec2)
             if volumes:
                 for volume in volumes:
+                    name = None
+                    for tag in volume.tags:
+                           name = tag.get('Value')
                     tags_kwargs = process_tags(volume)
-                    take_snapshots(volume, region, tags_kwargs)
+                    take_snapshots(volume, region, tags_kwargs, name)
                     snap_count += 1
             else:
                 print("No volumes found with tags: {} in {}.".format(
